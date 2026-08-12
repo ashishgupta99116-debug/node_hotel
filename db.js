@@ -9,8 +9,7 @@ const mongoose = require('mongoose');
 const mongoURL = process.env.MONGODB_URL ;
 
 // local url
- //const mongoURL = "mongodb://127.0.0.1:27017/hotels"  // hotel basically mera database ka name hai(kuch bhi de sakhta hai name)
-
+ //const mongoURL = process.env.LOCAL_MONGODB_URL ;
 mongoose.connect(mongoURL, {
     family: 4 // 🔥 YE LINE SABSE IMPORTANT HAI: Yeh Node.js v24 ke DNS query issue ko bypass kar degi
 })
