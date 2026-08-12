@@ -2,6 +2,7 @@ const express = require('express')
 const app = express() ; // server jis building ma rahta hai 
 const db = require('./db');
 
+require('dotenv').config() ;
 
 const bodyParser = require("body-parser") ;
 //express contain bodyparser lib also
@@ -18,7 +19,11 @@ const menuroutes = require('./routes/menuroutes') ;
 app.use('/menu' , menuroutes) ;
 app.use('/person' , personroutes) ;
 
+const PORT = process.env.PORT || 3000 ;
 
+app.listen(PORT , (eq, res)=>{
+    console.log("listening on port 3000")
+}) // room number of server (jaha vo rahta hai)
 
 
 // for new mongoose version we use asyn and await (data ko aana ma bhi time lagta hai)
@@ -86,11 +91,7 @@ app.use('/person' , personroutes) ;
 // })
 // app.get('/sambhar' , function(req , res){ // get  function is to read the information only not doing anything with information
 //     res.send('i would love to serve sambhar') // req means request and res means response
-// })
-app.listen(3000 , (eq, res)=>{
-    console.log("listening on port 3000")
-}) // room number of server (jaha vo rahta hai)
-
+// }
 
 // data directory
 // C:\Program Files\MongoDB\Server\8.3\data\
