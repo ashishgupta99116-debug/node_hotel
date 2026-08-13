@@ -6,10 +6,10 @@ const mongoose = require('mongoose');
 
 // VS Code ya standard driver ki jagah ye direct string use karein.
 // Isme humne family: 4 option add kiya hai jo Node v24 ko forcingly IPv4 resolve karne ko bolega.
-const mongoURL = process.env.MONGODB_URL ;
+//const mongoURL = process.env.MONGODB_URL ;
 
 // local url
- //const mongoURL = process.env.LOCAL_MONGODB_URL ;
+ const mongoURL = process.env.LOCAL_MONGODB_URL ;
 mongoose.connect(mongoURL, {
     family: 4 // 🔥 YE LINE SABSE IMPORTANT HAI: Yeh Node.js v24 ke DNS query issue ko bypass kar degi
 })
