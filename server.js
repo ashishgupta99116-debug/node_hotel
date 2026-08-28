@@ -1,145 +1,46 @@
-const express = require('express') 
-const app = express() ; // server jis building ma rahta hai 
+require('dotenv').config();
+
+const express = require('express');
+
+const app = express();
 const db = require('./db');
+app.use(express.json());
+const passport = require("./auth.js") ;
 
-require('dotenv').config() ;
+// middleware function
 
-const bodyParser = require("body-parser") ;
-//express contain bodyparser lib also
-app.use(express.json()) ; // store data in req.body
+// let say mujhe janana hai ke kis kis time par konse-konse request aa rhe hai 
 
-app.get('/' , function(req , res){ // get  function is to read the information only not doing anything with information
-    res.send('welcome to my hotel . how can i help you ?') // req means request and res means response
-})
+const logRequest = (req , res , next)=>{
+    console.log(`${ new Date().toLocaleString() } Request made to : ${ req.originalUrl }`) ;
+    next() // next is used because it says that ke ye middleware func run ho gya hai toh next func kar sakhta ho
+            // if i not use this toh server karta hi rahta ke kab ye kaam complete hoga 
+}
 
+// log request hum use kar sakhta hai har route ka time ko pta karna ka liya 
 
+// to write logRequest for all type of routes , we use 
 
-const personroutes = require('./routes/personroutes')
-const menuroutes = require('./routes/menuroutes') ;
-app.use('/menu' , menuroutes) ;
-app.use('/person' , personroutes) ;
+app.use(logRequest) ;
 
-const PORT = process.env.PORT || 3000 ;
+// authentication - ma check karunga ke jo person enter ho rh hai vo hamara hotel ka hai ke nhi 
 
-app.listen(PORT , (eq, res)=>{
-    console.log("listening on port 3000")
-}) // room number of server (jaha vo rahta hai)
+app.use(passport.initialize()) ;
 
+const LocalAuthMiddleware = passport.authenticate('local' , {session : false}) ;
 
-// for new mongoose version we use asyn and await (data ko aana ma bhi time lagta hai)
+app.get('/'  ,(req, res) => {
+    res.send('welcome to my hotel. how can i help you?');
+});
 
+const personroutes = require('./routes/personroutes');
+const menuroutes = require('./routes/menuroutes');
 
-// app.post('/person' , (req, res) =>{
+app.use('/menu', menuroutes);
+app.use('/person' , LocalAuthMiddleware , personroutes);
 
-//     const data = req.body // assuming the request body constain the person data 
+const PORT = 3000;
 
-//     // create a new person document using the mongoose model
-//     const newPerson = new Person(data) ;
-
-//     // save the new person data to the database
-
-//     newPerson.save((error , savedPerson) =>{
-        
-//         if(error){
-//             console.log('Error saving person' , error) ;
-//             res.status(500).json({error : 'Internet server error'}) ;
-//         }
-//         else{
-//             console.log('data saved successfully')
-//             res.status(200).json(savedPerson) ;
-//         }
-//     })
-// })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// app.get('/idli' , function(req , res){ // get  function is to read the information only not doing anything with information
-//     //res.send('sure sir') // req means request and res means response
-//     var customer_order = {
-//         item_name : "rava idli" ,
-//         size : "10 medium",
-//         is_sambhar : false ,
-//         is_chutney : true 
-//     }
-
-//     res.send("sure sir , this is your order : " + JSON.stringify(customer_order))
-// })
-// app.post('/items' , (req , res) =>{
-//   res.send('data is saved')
-// })
-// app.get('/sambhar' , function(req , res){ // get  function is to read the information only not doing anything with information
-//     res.send('i would love to serve sambhar') // req means request and res means response
-// }
-
-// data directory
-// C:\Program Files\MongoDB\Server\8.3\data\
-
-// log directory
-// C:\Program Files\MongoDB\Server\8.3\log\
-
-
-// C:\Users\ASHISH\AppData\Local\Programs\mongosh\
-
-
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-
-// const app = express();
-
-// mongoose.connect("mongodb://127.0.0.1:27017/mydatabase")
-// .then(() => {
-//     console.log("✅ MongoDB Connected");
-// })
-// .catch((err) => {
-//     console.log(err);
-// });
-
-// app.get("/", (req, res) => {
-//     res.send("Hello MongoDB");
-// });
-
-// app.listen(3000, () => {
-//     console.log("Server running on port 3000");
-// });
-
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-
-// const app = express();
-
-// mongoose
-//   .connect("mongodb://127.0.0.1:27017/myDatabase")
-//   .then(() => console.log("✅ MongoDB Connected"))
-//   .catch((err) => console.log(err));
-
-// app.get("/", (req, res) => {
-//   res.send("MongoDB Connected Successfully");
-// });
-
-// app.listen(3000, () => {
-//   console.log("Server running on port 3000");
-// });
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
