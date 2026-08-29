@@ -37,7 +37,7 @@ const personroutes = require('./routes/personroutes');
 const menuroutes = require('./routes/menuroutes');
 
 app.use('/menu', menuroutes);
-app.use('/person' , LocalAuthMiddleware , personroutes);
+app.use('/person' , personroutes);
 
 const PORT = 3000;
 
